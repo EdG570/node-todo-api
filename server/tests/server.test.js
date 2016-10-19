@@ -46,7 +46,7 @@ describe('POST /todos', () => {
       });
   });
 
-  it('should not create todo with inalid body data', (done) => {
+  it('should not create todo with empty required field', (done) => {
     request(app)
       .post('/todos')
       .send({})
@@ -60,6 +60,18 @@ describe('POST /todos', () => {
           expect(todos.length).toBe(2);
           done();
         }).catch((e) => done(e));
+      });
+  });
+});
+
+describe('GET /todos', () => {
+  it('should send all todos', (done) => {
+    request(app)
+      .get('/todos')
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todos.length).toBe(2);
       })
+      .end(done());
   });
 });
