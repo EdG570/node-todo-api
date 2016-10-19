@@ -5,7 +5,7 @@ const { ObjectID } = require('mongodb');
 const { app } = require('../server');
 const { Todo } = require('../models/todo');
 
-let todos = [
+const todos = [
   {
     description: 'First test todo',
      _id: new ObjectID()
@@ -77,8 +77,8 @@ describe('GET /todos', () => {
 });
 
 describe('GET /todos/:id', () => {
+
   it('should send todo if id matches existing todo', (done) => {
-    
     request(app)
       .get(`/todos/${todos[0]._id.toHexString()}`)
       .expect(200)
@@ -86,5 +86,24 @@ describe('GET /todos/:id', () => {
         expect(res.body.todo.description).toBe(todos[0].description);
       })
       .end(done());
-  })
+  });
+
+  // it('should send a 404 status if todo not found', (done) => {
+  //   const id = new ObjectID().toHexString();
+  //
+  //   request(app)
+  //     .get(`/todos/${id}`)
+  //     .expect(404)
+  //     .expect((res) => {
+  //       expect(res.body.error).toBe('Invalid ID');
+  //     })
+  //     .end(done());
+  // });
+  //
+  // it('should send a 400 for non-object ids', (done) => {
+  //   request(app)
+  //     .get('/todos/123abc')
+  //     .expect(400)
+  //     .end(done());
+  // });
 });
