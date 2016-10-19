@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha server/**/*.test.js",
+    "test-watch": "nodemon --exec 'npm test'"
   },
   "author": "Ed Glazenski",
   "license": "ISC",
@@ -15,6 +16,9 @@
   },
   "devDependencies": {
     "body-parser": "^1.15.2",
-    "nodemon": "^1.11.0"
+    "expect": "^1.20.2",
+    "mocha": "^3.1.2",
+    "nodemon": "^1.11.0",
+    "supertest": "^2.0.0"
   }
 }

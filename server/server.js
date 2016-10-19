@@ -21,6 +21,18 @@ app.post('/todos', (req, res) => {
   });
 });
 
+app.get('/todos', (req, res) => {
+  Todo.find({}).then((todos) => {
+    res.send(todos);
+  }, (err) => {
+    res.status(404).send();
+  })
+});
+
 app.listen(3000, () => {
   console.log('Express is listening on port 3000');
 });
+
+module.exports = {
+  app
+};
