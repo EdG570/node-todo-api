@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect('mongodb://localhost:27107/TodoAppMy');
+mongoose.connect('mongodb://localhost:27017/TodoAppMy');
 
 const app = mongoose.connection;
 
