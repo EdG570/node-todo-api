@@ -4,16 +4,16 @@ mongoose.Promise = global.Promise;
 
 mongoose.connect('mongodb://localhost:27017/TodoAppMy');
 
-const app = mongoose.connection;
+const db = mongoose.connection;
 
-app.on('error', (err) => {
+db.on('error', (err) => {
   console.log('Unable to connect to MongoDB', err);
 });
 
-app.once('open', () => {
+db.once('open', () => {
   console.log('Successfully connected to MongoDB');
 })
 
 module.exports = {
-  mongoose
+  db
 };
