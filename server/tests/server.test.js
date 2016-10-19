@@ -75,3 +75,16 @@ describe('GET /todos', () => {
       .end(done());
   });
 });
+
+describe('GET /todos/:id', () => {
+  it('should send todo if id matches existing todo', (done) => {
+    
+    request(app)
+      .get(`/todos/${todos[0]._id.toHexString()}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.description).toBe(todos[0].description);
+      })
+      .end(done());
+  })
+});
