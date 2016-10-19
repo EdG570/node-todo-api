@@ -76,17 +76,17 @@ describe('GET /todos', () => {
   });
 });
 
-describe('GET /todos/:id', () => {
-
-  it('should send todo if id matches existing todo', (done) => {
-    request(app)
-      .get(`/todos/${todos[0]._id.toHexString()}`)
-      .expect(200)
-      .expect((res) => {
-        expect(res.body.todo.description).toBe(todos[0].description);
-      })
-      .end(done());
-  });
+// describe('GET /todos/:id', () => {
+//
+//   it('should send todo if id matches existing todo', (done) => {
+//     request(app)
+//       .get(`/todos/${todos[0]._id.toHexString()}`)
+//       .expect(200)
+//       .expect((res) => {
+//         expect(res.body.todo.description).toBe(todos[0].description);
+//       })
+//       .end(done());
+//   });
 
   // it('should send a 404 status if todo not found', (done) => {
   //   const id = new ObjectID().toHexString();
@@ -106,4 +106,39 @@ describe('GET /todos/:id', () => {
   //     .expect(400)
   //     .end(done());
   // });
+// });
+
+describe('DELETE /todos/:id', () => {
+  it('should delete a todo by ID', (done) => {
+    request(app)
+      .delete(`/todos/${todos[0]._id.toHexString()}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.description).toBe(todos[0].description);
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        Todo.find().then((todos) => {
+          expect(todos.length).toBe(1);
+          done();
+        }).catch((e) => done(e));
+      });
+  });
+
+  it('should send a 404 for invalid object-id', (done) => {
+    request(app)
+      .delete('/todos/abc123')
+      .expect(404)
+      .end(done());
+  });
+
+  it('should send a 404 if todo is not found', (done) => {
+    request(app)
+      .delete(`/todos/${new ObjectID().toHexString()}`)
+      .expect(404)
+      .end(done());
+  });
 });
