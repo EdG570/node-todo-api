@@ -4,6 +4,7 @@ const { ObjectID } = require('mongodb');
 
 const { app } = require('../server');
 const { Todo } = require('../models/todo');
+const { User } = require('../models/user');
 
 const todos = [
   {
@@ -18,9 +19,26 @@ const todos = [
   }
 ];
 
+const users = [
+  {
+    email: 'email@email.com',
+    password: 'abc123!'
+  },
+  {
+    email: 'email2@email.com',
+    password: '123abc!'
+  }
+];
+
 beforeEach((done) => {
   Todo.remove({}).then(() => {
     return Todo.insertMany(todos);
+  }).then(() => done());
+});
+
+beforeEach((done) => {
+  User.remove({}).then(() => {
+    return User.insertMany(users);
   }).then(() => done());
 });
 
@@ -197,6 +215,33 @@ describe('PATCH /todos/:id', () => {
         Todo.findById(id).then((todo) => {
           expect(todo.isComplete).toBe(false);
           expect(todo.completedAt).toNotExist();
+          done();
+        }).catch((e) => done(e));
+      });
+  });
+});
+
+describe('POST /users', () => {
+  it('should create a new user', (done) => {
+    const user = {
+      email: 'newuser@email.com',
+      password: 'abc123!'
+    };
+
+    request(app)
+      .post('/users')
+      .send(user)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.email).toBe(user.email);
+        expect(res.body.password).toBe(user.password);
+      })
+      .end((err, res) => {
+        if (err) return done(err);
+
+        User.findOne({ email: user.email }).then((doc) => {
+          expect(doc.email).toBe(user.email);
+          expect(doc.password).toBe(user.password);
           done();
         }).catch((e) => done(e));
       });
