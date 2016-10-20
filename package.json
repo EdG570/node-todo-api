@@ -11,6 +11,7 @@
   "author": "Ed Glazenski",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.3.0",
     "crypto-js": "^3.1.6",
     "express": "^4.14.0",
     "jsonwebtoken": "^7.1.9",
