@@ -246,4 +246,29 @@ describe('POST /users', () => {
         }).catch((e) => done(e));
       });
   });
+
+  it('should send a 400 for empty fields', (done) => {
+    request(app)
+      .post('/users')
+      .send({})
+      .expect(400)
+      .end((err, res) => {
+        if (err) return done(err);
+        done();
+      });
+  });
+
+  it('should send a 400 for invalid fields', (done) => {
+    request(app)
+      .post('/users')
+      .send({
+        email: 'email3@email.com',
+        password: 'abc'
+      })
+      .expect(400)
+      .end((err, res) => {
+        if (err) return done(err);
+        done();
+      })
+  });
 });
