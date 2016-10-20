@@ -1,13 +1,4 @@
-let env = process.env.NODE_ENV || 'development';
-console.log('env *****', env);
-
-if (env === 'development') {
-  process.env.PORT = 3000;
-  process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoAppMy';
-} else if (env === 'test') {
-  process.env.PORT = 3000;
-  process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoAppMyTest';
-}
+require('./config/config');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -109,6 +100,18 @@ app.patch('/todos/:id', (req, res) => {
       res.status(400).send();
     });
 });
+
+app.post('/users', (req, res) => {
+    let body = _.pick(req.body, ['email', 'password']);
+    const user = new User(body);
+
+    user.save().then((user) => {
+      res.send(user);
+    }).catch((e) => {
+      res.status(400).send(e);
+    });
+});
+
 
 app.listen(port, () => {
   console.log(`Express is listening on port: ${port}`);
