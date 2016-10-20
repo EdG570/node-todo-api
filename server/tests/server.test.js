@@ -77,13 +77,12 @@ describe('GET /todos', () => {
 });
 
 // describe('GET /todos/:id', () => {
-//
 //   it('should send todo if id matches existing todo', (done) => {
 //     request(app)
 //       .get(`/todos/${todos[0]._id.toHexString()}`)
 //       .expect(200)
 //       .expect((res) => {
-//         expect(res.body.todo.description).toBe(todos[0].description);
+//         expect(res.body.description).toBe(todos[0].description);
 //       })
 //       .end(done());
 //   });
@@ -100,10 +99,10 @@ describe('GET /todos', () => {
   //     .end(done());
   // });
   //
-  // it('should send a 400 for non-object ids', (done) => {
+  // it('should send a 404 for non-object ids', (done) => {
   //   request(app)
   //     .get('/todos/123abc')
-  //     .expect(400)
+  //     .expect(404)
   //     .end(done());
   // });
 // });
