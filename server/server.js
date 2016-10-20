@@ -62,7 +62,7 @@ app.delete('/todos/:id', (req, res) => {
 
   Todo.findByIdAndRemove({ _id: id }).then((todo) => {
     if (!todo) {
-      res.send(404).send();
+      res.sendStatus(404);
     }
 
     res.status(200).send(todo);
