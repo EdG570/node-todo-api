@@ -5,42 +5,9 @@ const { ObjectID } = require('mongodb');
 const { app } = require('../server');
 const { Todo } = require('../models/todo');
 const { User } = require('../models/user');
+const { todos, populateTodos, users, populateUsers } = require('./seed/seed');
 
-const todos = [
-  {
-    description: 'First test todo',
-     _id: new ObjectID()
-   },
-  {
-    description: 'Second test todo',
-    _id: new ObjectID(),
-    completed: true,
-    completedAt: 333
-  }
-];
-
-const users = [
-  {
-    email: 'email@email.com',
-    password: 'abc123!'
-  },
-  {
-    email: 'email2@email.com',
-    password: '123abc!'
-  }
-];
-
-beforeEach((done) => {
-  Todo.remove({}).then(() => {
-    return Todo.insertMany(todos);
-  }).then(() => done());
-});
-
-beforeEach((done) => {
-  User.remove({}).then(() => {
-    return User.insertMany(users);
-  }).then(() => done());
-});
+beforeEach(populateTodos, populateUsers);
 
 describe('POST /todos', () => {
   it('should create a new todo', (done) => {
@@ -223,25 +190,21 @@ describe('PATCH /todos/:id', () => {
 
 describe('POST /users', () => {
   it('should create a new user', (done) => {
-    const user = {
-      email: 'newuser@email.com',
-      password: 'abc123!'
-    };
+    const email = 'newuser@email.com';
+    const password = 'abc1234!';
 
     request(app)
       .post('/users')
-      .send(user)
+      .send({ email, password })
       .expect(200)
       .expect((res) => {
-        expect(res.body.email).toBe(user.email);
-        expect(res.body.password).toBe(user.password);
+        expect(res.body.email).toBe(email);
       })
       .end((err, res) => {
         if (err) return done(err);
 
-        User.findOne({ email: user.email }).then((doc) => {
-          expect(doc.email).toBe(user.email);
-          expect(doc.password).toBe(user.password);
+        User.findOne({ email }).then((doc) => {
+          expect(doc.email).toBe(email);
           done();
         }).catch((e) => done(e));
       });
@@ -269,6 +232,6 @@ describe('POST /users', () => {
       .end((err, res) => {
         if (err) return done(err);
         done();
-      })
+      });
   });
 });
