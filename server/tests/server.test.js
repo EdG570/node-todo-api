@@ -7,7 +7,8 @@ const { Todo } = require('../models/todo');
 const { User } = require('../models/user');
 const { todos, populateTodos, users, populateUsers } = require('./seed/seed');
 
-beforeEach(populateTodos, populateUsers);
+beforeEach(populateTodos);
+beforeEach(populateUsers);
 
 describe('POST /todos', () => {
   it('should create a new todo', (done) => {
@@ -215,10 +216,7 @@ describe('POST /users', () => {
       .post('/users')
       .send({})
       .expect(400)
-      .end((err, res) => {
-        if (err) return done(err);
-        done();
-      });
+      .end(done);
   });
 
   it('should send a 400 for invalid fields', (done) => {
@@ -229,9 +227,30 @@ describe('POST /users', () => {
         password: 'abc'
       })
       .expect(400)
-      .end((err, res) => {
-        if (err) return done(err);
-        done();
-      });
+      .end(done);
+  });
+});
+
+describe('GET /users/me', () => {
+  it('should return user if authenticated', (done) => {
+    request(app)
+      .get('/users/me')
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body._id).toBe(users[0]._id.toHexString());
+        expect(res.body.email).toBe(users[0].email);
+      })
+      .end(done);
+  });
+
+  it('should return 401 if not authenticated', (done) => {
+    request(app)
+      .get('/users/me')
+      .expect(401)
+      .expect((res) => {
+        expect(res.body).toEqual({});
+      })
+      .end(done);
   });
 });
