@@ -200,12 +200,15 @@ describe('POST /users', () => {
       .expect(200)
       .expect((res) => {
         expect(res.body.email).toBe(email);
+        expect(res.headers["x-auth"]).toExist();
+        expect(res.body._id).toExist();
       })
       .end((err, res) => {
         if (err) return done(err);
 
-        User.findOne({ email }).then((doc) => {
-          expect(doc.email).toBe(email);
+        User.findOne({ email }).then((user) => {
+          expect(user.email).toBe(email);
+          expect(user.password).toNotBe(password);
           done();
         }).catch((e) => done(e));
       });
@@ -226,6 +229,17 @@ describe('POST /users', () => {
         email: 'email3@email.com',
         password: 'abc'
       })
+      .expect(400)
+      .end(done);
+  });
+
+  it('should not create user if email exists', (done) => {
+    const email = users[0].email;
+    const password = users[0].password;
+
+    request(app)
+      .post('/users')
+      .send({ email, password })
       .expect(400)
       .end(done);
   });
